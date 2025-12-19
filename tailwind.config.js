@@ -18,6 +18,15 @@ module.exports = {
           900: '#1e293b',
         },
       },
+      keyframes: {
+        'dropdown-enter': {
+          '0%': { opacity: '0', transform: 'translateY(-20px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+      },
+      animation: {
+        'dropdown-enter': 'dropdown-enter 0.4s ease-out',
+      },
     },
   },
   plugins: [],

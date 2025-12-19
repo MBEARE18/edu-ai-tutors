@@ -38,6 +38,30 @@ export default function FeaturedPackages() {
       price: 4999,
       features: ['Fundamentals focus', 'Practice assignments', 'Monthly assessments', 'Confidence-building workshops'],
     },
+    {
+      id: 4,
+      title: 'Final Exam Preparation Package',
+      description: 'Intensive revision plan covering the full syllabus with exam-style questions and timed practice.',
+      image: '📚',
+      price: 5999,
+      features: ['Full syllabus revision', 'Exam pattern mock tests', 'Formula & concept recap notes', 'Time-management strategies'],
+    },
+    {
+      id: 5,
+      title: 'Final Board Exam Package',
+      description: 'Focused board-exam preparation with previous year papers, sample papers and answer writing practice.',
+      image: '🏆',
+      price: 6999,
+      features: ['Previous year board papers', 'Model answer writing sessions', 'Board-specific doubt clearing', 'Scoring strategy workshops'],
+    },
+    {
+      id: 6,
+      title: 'Live Classes Package',
+      description: 'Structured live interactive classes with regular schedules, homework and live doubt solving.',
+      image: '🎥',
+      price: 5499,
+      features: ['Scheduled live classes', 'Live doubt-solving sessions', 'Homework with feedback', 'Class recordings access'],
+    },
   ]
 
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null)

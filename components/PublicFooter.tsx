@@ -1,45 +1,132 @@
 'use client'
 
-import { MessageCircle } from 'lucide-react'
+import { MessageCircle, Facebook, Twitter, Instagram, Youtube, Phone, Mail, MapPin } from 'lucide-react'
+import Link from 'next/link'
+import Image from 'next/image'
 
 export default function PublicFooter() {
   return (
     <footer className="bg-gray-900 text-white mt-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid md:grid-cols-4 gap-8 mb-8">
+          {/* Brand & Social */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
-            <div className="space-y-2 text-gray-300">
-              <p><span className="font-medium">Email:</span> support@edualtutors.com</p>
-              <p><span className="font-medium">Phone:</span> +1 (555) 123-4567</p>
-              <p><span className="font-medium">Website:</span> www.edualtutors.com</p>
+            <div className="flex items-center mb-4">
+              <Image
+                src="/logo-eduaitutors.png"
+                alt="EduAiTutors - Path to Success"
+                width={320}
+                height={100}
+                className="h-24 w-auto"
+              />
+            </div>
+            <p className="text-gray-400">
+              Empowering students with high-quality live interactive classes and structured learning paths.
+            </p>
+            <div className="flex space-x-4 mt-4">
+              <a href="#" className="text-gray-400 hover:text-white transition">
+                <Facebook className="w-5 h-5" />
+              </a>
+              <a href="#" className="text-gray-400 hover:text-white transition">
+                <Twitter className="w-5 h-5" />
+              </a>
+              <a href="#" className="text-gray-400 hover:text-white transition">
+                <Instagram className="w-5 h-5" />
+              </a>
+              <a href="#" className="text-gray-400 hover:text-white transition">
+                <Youtube className="w-5 h-5" />
+              </a>
             </div>
           </div>
+
+          {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-2 text-gray-300">
-              <li><a href="#features" className="hover:text-white">Features</a></li>
-              <li><a href="#packages" className="hover:text-white">Packages</a></li>
-              <li><a href="#testimonials" className="hover:text-white">Testimonials</a></li>
-              <li><a href="/login" className="hover:text-white">Login</a></li>
+            <h4 className="text-lg font-bold mb-4">Quick Links</h4>
+            <ul className="space-y-2">
+              <li>
+                <a href="#home" className="text-gray-400 hover:text-white transition">
+                  Home
+                </a>
+              </li>
+              <li>
+                <a href="#courses" className="text-gray-400 hover:text-white transition">
+                  Courses
+                </a>
+              </li>
+              <li>
+                <a href="#features" className="text-gray-400 hover:text-white transition">
+                  Features
+                </a>
+              </li>
+              <li>
+                <a href="#about" className="text-gray-400 hover:text-white transition">
+                  About
+                </a>
+              </li>
+              <li>
+                <Link href="/login" className="text-gray-400 hover:text-white transition">
+                  Register
+                </Link>
+              </li>
             </ul>
           </div>
+
+          {/* Courses */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Language & Settings</h3>
-            <div className="space-y-2 text-gray-300">
-              <p>Language: EN</p>
-              <p>AI Assistant: Enabled</p>
-            </div>
+            <h4 className="text-lg font-bold mb-4">Courses</h4>
+            <ul className="space-y-2">
+              <li>
+                <a href="#courses" className="text-gray-400 hover:text-white transition">
+                  Physics
+                </a>
+              </li>
+              <li>
+                <a href="#courses" className="text-gray-400 hover:text-white transition">
+                  Chemistry
+                </a>
+              </li>
+              <li>
+                <a href="#courses" className="text-gray-400 hover:text-white transition">
+                  Biology
+                </a>
+              </li>
+              <li>
+                <a href="#courses" className="text-gray-400 hover:text-white transition">
+                  Mathematics
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Contact Info */}
+          <div>
+            <h4 className="text-lg font-bold mb-4">Contact Info</h4>
+            <ul className="space-y-2 text-gray-400">
+              <li className="flex items-center">
+                <Phone className="w-4 h-4 mr-2" /> +91 98765 43210
+              </li>
+              <li className="flex items-center">
+                <Mail className="w-4 h-4 mr-2" />
+                <a href="mailto:info@edualtutors.com" className="hover:text-white transition">
+                  info@edualtutors.com
+                </a>
+              </li>
+              <li className="flex items-center">
+                <MapPin className="w-4 h-4 mr-2" /> Bangalore, India
+              </li>
+            </ul>
           </div>
         </div>
-        <div className="mt-8 pt-8 border-t border-gray-800 text-center text-gray-400">
-          <p>&copy; 2024 Edu Altutors. All rights reserved.</p>
+
+        <div className="border-t border-gray-800 pt-8 text-center text-gray-400">
+          <p>&copy; 2025-2026 Edu Altutors. All rights reserved. | Designed with ❤️ for Education</p>
         </div>
       </div>
+
+      {/* Chat / Help Floating Button */}
       <button className="fixed bottom-6 right-6 w-14 h-14 bg-primary-600 hover:bg-primary-700 rounded-full shadow-lg flex items-center justify-center text-white transition-all hover:scale-110">
         <MessageCircle className="w-6 h-6" />
       </button>
     </footer>
   )
 }
-

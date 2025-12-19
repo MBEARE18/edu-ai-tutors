@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 interface Course {
   subject: string
@@ -60,22 +61,22 @@ export default function CoursesSection({ selectedBoard, setSelectedBoard, onSubj
   const handleSubjectToggle = (course: Course) => {
     const key = getSubjectKey(course)
     const newSelected = new Set(selectedSubjects)
-    
+
     if (newSelected.has(key)) {
       newSelected.delete(key)
     } else {
       newSelected.add(key)
     }
-    
+
     setSelectedSubjects(newSelected)
-    
+
     // Convert to array format for parent
     const subjectsArray = Array.from(newSelected).map(key => {
       const [board, classNum, subject] = key.split('-')
       const courseData = courses[board.toLowerCase()][classNum].find(c => c.subject === subject)
       return courseData
     }).filter(Boolean)
-    
+
     onSubjectChange(subjectsArray)
   }
 
@@ -106,11 +107,21 @@ export default function CoursesSection({ selectedBoard, setSelectedBoard, onSubj
     const accent = getAccentColor(index)
 
     return (
-      <div key={key} className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition">
-        <div className={`h-48 bg-gradient-to-br ${gradient} relative`}>
-          <img 
-            src={course.image} 
-            alt={course.subject} 
+      <motion.div
+        key={key}
+        layout
+        initial={{ opacity: 0, scale: 0.9 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.4 }}
+        className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
+      >
+        <div className={`h-48 bg-gradient-to-br ${gradient} relative overflow-hidden`}>
+          <motion.img
+            whileHover={{ scale: 1.1 }}
+            transition={{ duration: 0.6 }}
+            src={course.image}
+            alt={course.subject}
             className="w-full h-full object-cover"
             onError={(e) => {
               const target = e.target as HTMLImageElement
@@ -143,36 +154,45 @@ export default function CoursesSection({ selectedBoard, setSelectedBoard, onSubj
               type="checkbox"
               checked={isSelected}
               onChange={() => handleSubjectToggle(course)}
-              className={`w-6 h-6 ${accent} rounded border-gray-300 focus:ring-2 focus:ring-primary-500`}
+              className={`w-6 h-6 ${accent} rounded border-gray-300 focus:ring-2 focus:ring-primary-500 cursor-pointer`}
             />
           </div>
         </div>
-      </div>
+      </motion.div>
     )
   }
 
   return (
-    <section id="courses" className="py-20 bg-gray-50">
+    <section id="courses" className="py-20 bg-gray-50 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Available Courses</h2>
           <p className="text-xl text-gray-600">Choose your board and explore our courses</p>
-        </div>
+        </motion.div>
 
         {/* Board Tabs */}
         <div className="flex justify-center mb-12">
-          <div className="inline-flex bg-white rounded-full shadow-lg p-2">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="inline-flex bg-white rounded-full shadow-lg p-2"
+          >
             <button
               onClick={() => {
                 setSelectedBoard('cbse')
                 setSelectedSubjects(new Set())
                 onSubjectChange([])
               }}
-              className={`px-8 py-3 rounded-full font-bold text-lg transition-all duration-300 ${
-                selectedBoard === 'cbse'
+              className={`px-8 py-3 rounded-full font-bold text-lg transition-all duration-300 ${selectedBoard === 'cbse'
                   ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white'
                   : 'text-gray-600 hover:text-primary-600'
-              }`}
+                }`}
             >
               CBSE
             </button>
@@ -182,36 +202,46 @@ export default function CoursesSection({ selectedBoard, setSelectedBoard, onSubj
                 setSelectedSubjects(new Set())
                 onSubjectChange([])
               }}
-              className={`px-8 py-3 rounded-full font-bold text-lg transition-all duration-300 ${
-                selectedBoard === 'icse'
+              className={`px-8 py-3 rounded-full font-bold text-lg transition-all duration-300 ${selectedBoard === 'icse'
                   ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white'
                   : 'text-gray-600 hover:text-primary-600'
-              }`}
+                }`}
             >
               ICSE
             </button>
-          </div>
+          </motion.div>
         </div>
 
         {/* Course Grids */}
-        {(['9', '10'] as const).map((classNum) => (
-          <div key={classNum} className="mb-16">
-            <h3 className="text-3xl font-bold text-gray-900 mb-8 text-center">
-              Class {classNum}th - {selectedBoard.toUpperCase()}
-            </h3>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {courses[selectedBoard][classNum].map((course, index) => renderCourseCard(course, index))}
-            </div>
-            <div className="text-center mt-16">
-              <button
-                onClick={onEnrollClick}
-                className="bg-gradient-to-r from-primary-600 to-primary-700 text-white px-12 py-4 rounded-full font-bold text-lg hover:shadow-xl transition transform hover:-translate-y-1"
-              >
-                Enroll Now <span className="ml-2">→</span>
-              </button>
-            </div>
-          </div>
-        ))}
+        <AnimatePresence mode="wait">
+          {(['9', '10'] as const).map((classNum) => (
+            <motion.div
+              key={`${selectedBoard}-${classNum}`}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.4 }}
+              className="mb-16"
+            >
+              <h3 className="text-3xl font-bold text-gray-900 mb-8 text-center uppercase tracking-widest border-b-2 border-primary-100 pb-4 w-fit mx-auto">
+                Class {classNum}th - {selectedBoard.toUpperCase()}
+              </h3>
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {courses[selectedBoard][classNum].map((course, index) => renderCourseCard(course, index))}
+              </div>
+              <div className="text-center mt-16">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={onEnrollClick}
+                  className="bg-gradient-to-r from-primary-600 to-primary-700 text-white px-12 py-4 rounded-full font-bold text-lg hover:shadow-xl transition transform shadow-lg"
+                >
+                  Enroll Now <span className="ml-2">→</span>
+                </motion.button>
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
     </section>
   )
