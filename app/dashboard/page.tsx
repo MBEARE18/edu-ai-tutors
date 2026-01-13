@@ -6,10 +6,9 @@ import Header from '@/components/Header'
 import Sidebar from '@/components/Sidebar'
 import QuizProgress from '@/components/QuizProgress'
 import LearningProgress from '@/components/LearningProgress'
-import Calendar from '@/components/Calendar'
+import RightPanel from '@/components/RightPanel'
 import WhyChooseUs from '@/components/WhyChooseUs'
 import Testimonials from '@/components/Testimonials'
-import Footer from '@/components/Footer'
 
 export default function Dashboard() {
   const [user, setUser] = useState<{ name: string } | null>(null)
@@ -37,23 +36,36 @@ export default function Dashboard() {
       <Header />
       <div className="flex">
         <Sidebar />
-        <main className="flex-1 ml-64 mt-16 p-8">
-          <div className="mb-8">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 mb-6">
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">Welcome Back, {user.name}!</h1>
-              <h3 className="text-xl text-gray-600">Continue your learning journey</h3>
+        <main className="flex-1 ml-64 p-8">
+          <div className="flex flex-col lg:flex-row gap-8">
+            {/* Left/Middle Column - Content */}
+            <div className="flex-1">
+              <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 mb-8 relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-primary-50 rounded-full blur-3xl -mr-32 -mt-32 opacity-50 group-hover:opacity-80 transition-opacity" />
+                <div className="relative z-10">
+                  <h1 className="text-4xl font-black text-gray-900 mb-2">Welcome Back, {user.name}! 🚀</h1>
+                  <h3 className="text-xl text-gray-500 font-medium">Continue your learning journey and achieve your goals today.</h3>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <QuizProgress />
+                <LearningProgress />
+              </div>
+
+              <WhyChooseUs />
+              <div className="mt-8">
+                <Testimonials />
+              </div>
+            </div>
+
+            {/* Right Side Section - Analytics & Schedule */}
+            <div className="w-full lg:w-96 space-y-8">
+              <RightPanel />
             </div>
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-            <QuizProgress />
-            <LearningProgress />
-            <Calendar />
-          </div>
-          <WhyChooseUs />
-          <Testimonials />
         </main>
       </div>
-      <Footer />
     </div>
   )
 }

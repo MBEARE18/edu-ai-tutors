@@ -1,16 +1,20 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { motion, useScroll, useSpring } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ChevronDown, X, ArrowRight, Video, GraduationCap, BookOpen, HelpCircle, Trophy, Target, Smile, Star } from 'lucide-react'
+import { ChevronDown, X, ArrowRight, Video, GraduationCap, BookOpen, HelpCircle, Trophy, Target, Smile, Star, LogOut, User, MoreVertical, LayoutDashboard } from 'lucide-react'
+import { AnimatePresence, motion, useScroll, useSpring } from 'framer-motion'
+import { useRouter } from 'next/navigation'
 import PackagesSection from '@/components/PackagesSection'
 import { toast } from 'react-toastify'
 
 export default function PublicHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [fullScreenDropdown, setFullScreenDropdown] = useState<string | null>(null)
+  const [user, setUser] = useState<{ fullName?: string; name?: string; email: string } | null>(null)
+  const [isProfileOpen, setIsProfileOpen] = useState(false)
+  const router = useRouter()
 
   const { scrollYProgress } = useScroll()
   const scaleX = useSpring(scrollYProgress, {
@@ -18,6 +22,20 @@ export default function PublicHeader() {
     damping: 30,
     restDelta: 0.001
   })
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('currentUser')
+    if (storedUser) {
+      setUser(JSON.parse(storedUser))
+    }
+  }, [])
+
+  const handleLogout = () => {
+    localStorage.removeItem('currentUser')
+    setUser(null)
+    toast.success('Logged out successfully')
+    router.push('/')
+  }
 
   const studyMenuItems = [
     {
@@ -134,23 +152,81 @@ export default function PublicHeader() {
                 </button>
               </div>
 
-              <div className="flex items-center space-x-4 ml-4">
-                <Link
-                  href="/login?mode=signup"
-                  className="text-gray-700 hover:text-primary-600 font-medium transition-all duration-300 relative group"
-                  onClick={handleDropdownClose}
-                >
-                  Register
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-600 transition-all duration-300 group-hover:w-full"></span>
-                </Link>
-                <Link
-                  href="/login"
-                  className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 font-semibold transition"
-                  onClick={handleDropdownClose}
-                >
-                  Login
-                </Link>
-              </div>
+              {user ? (
+                <div className="relative ml-4">
+                  <button
+                    onClick={() => setIsProfileOpen(!isProfileOpen)}
+                    className="flex items-center space-x-2 bg-transparent rounded-full hover:bg-primary-100 transition-all duration-300 p-1"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-primary-600 flex items-center justify-center text-white font-bold shadow-lg ring-2 ring-white">
+                      {(user.fullName || user.name || 'U').charAt(0).toUpperCase()}
+                    </div>
+                    <div className="pr-1 text-gray-500">
+                      <MoreVertical className="w-5 h-5 transition-transform group-hover:scale-110" />
+                    </div>
+                  </button>
+
+                  <AnimatePresence>
+                    {isProfileOpen && (
+                      <>
+                        <div
+                          className="fixed inset-0 z-10"
+                          onClick={() => setIsProfileOpen(false)}
+                        />
+                        <motion.div
+                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                          className="absolute right-0 mt-3 w-56 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 z-20 origin-top-right"
+                        >
+                          <div className="px-4 py-3 border-b border-gray-50 mb-1">
+                            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Signed in as</p>
+                            <p className="text-sm font-black text-gray-900 truncate">{user.fullName || user.name || 'User'}</p>
+                          </div>
+
+                          <Link
+                            href="/dashboard"
+                            className="flex items-center space-x-3 px-4 py-3 text-sm font-bold text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors"
+                            onClick={() => setIsProfileOpen(false)}
+                          >
+                            <LayoutDashboard className="w-4 h-4" />
+                            <span>My Dashboard</span>
+                          </Link>
+
+                          <button
+                            onClick={() => {
+                              setIsProfileOpen(false)
+                              handleLogout()
+                            }}
+                            className="w-full flex items-center space-x-3 px-4 py-3 text-sm font-bold text-red-500 hover:bg-red-50 transition-colors text-left"
+                          >
+                            <LogOut className="w-4 h-4" />
+                            <span>Logout</span>
+                          </button>
+                        </motion.div>
+                      </>
+                    )}
+                  </AnimatePresence>
+                </div>
+              ) : (
+                <div className="flex items-center space-x-4 ml-4">
+                  <Link
+                    href="/login?mode=signup"
+                    className="text-gray-700 hover:text-primary-600 font-medium transition-all duration-300 relative group"
+                    onClick={handleDropdownClose}
+                  >
+                    Register
+                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-600 transition-all duration-300 group-hover:w-full"></span>
+                  </Link>
+                  <Link
+                    href="/login"
+                    className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 font-semibold transition"
+                    onClick={handleDropdownClose}
+                  >
+                    Login
+                  </Link>
+                </div>
+              )}
             </nav>
 
             <div className="lg:hidden">
@@ -515,18 +591,43 @@ export default function PublicHeader() {
             <Link href="#features" className="block text-gray-700 hover:text-primary-600 font-medium py-2" onClick={() => setMobileMenuOpen(false)}>Features</Link>
             <Link href="#about" className="block text-gray-700 hover:text-primary-600 font-medium py-2" onClick={() => setMobileMenuOpen(false)}>About</Link>
             <Link href="#testimonials" className="block text-gray-700 hover:text-primary-600 font-medium py-2" onClick={() => setMobileMenuOpen(false)}>Testimonials</Link>
-            <div className="pt-4 border-t mt-4">
-              <Link
-                href="/login?mode=signup"
-                className="block text-gray-700 hover:text-primary-600 font-medium mb-3 py-2"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Register
-              </Link>
-              <Link href="/login" className="block w-full bg-primary-600 text-white px-6 py-3 rounded-lg font-semibold text-center hover:bg-primary-700 transition" onClick={() => setMobileMenuOpen(false)}>
-                Login
-              </Link>
-            </div>
+            {user ? (
+              <div className="pt-4 border-t mt-4 space-y-4">
+                <Link
+                  href="/dashboard"
+                  className="flex items-center space-x-3 p-3 bg-white rounded-xl border border-gray-100"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <div className="w-10 h-10 rounded-full bg-primary-600 flex items-center justify-center text-white font-bold">
+                    {(user.fullName || user.name || 'U').charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <p className="font-bold text-gray-900">{user.fullName || user.name || 'User'}</p>
+                    <p className="text-xs text-gray-500">Go to Dashboard</p>
+                  </div>
+                </Link>
+                <button
+                  onClick={() => { handleLogout(); setMobileMenuOpen(false); }}
+                  className="w-full flex items-center justify-center space-x-2 bg-red-50 text-red-600 px-6 py-3 rounded-xl font-bold hover:bg-red-100 transition"
+                >
+                  <LogOut className="w-5 h-5" />
+                  <span>Logout</span>
+                </button>
+              </div>
+            ) : (
+              <div className="pt-4 border-t mt-4">
+                <Link
+                  href="/login?mode=signup"
+                  className="block text-gray-700 hover:text-primary-600 font-medium mb-3 py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Register
+                </Link>
+                <Link href="/login" className="block w-full bg-primary-600 text-white px-6 py-3 rounded-lg font-semibold text-center hover:bg-primary-700 transition" onClick={() => setMobileMenuOpen(false)}>
+                  Login
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       )}
